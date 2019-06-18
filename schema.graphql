@@ -49,12 +49,7 @@ type Query {
     # Website queries
     Website(id: ID!): Website
     WebsiteByUrl(url: Url!): Website
-    Website(limit: Int, skip: Int, sort_field: String, sort_order: String): [Website]
-
-    # Visits queries
-    Website(id: ID!): Website
-    WebsiteByUrl(url: Url!): Website
-    Website(limit: Int, skip: Int, sort_field: String, sort_order: String): [Website]
+    Websites(limit: Int, skip: Int, sort_field: String, sort_order: String): [Website]
 
     # Return the total stats for the given
     # timestamp range [initial_timestamp, final_timestamp].
@@ -65,7 +60,7 @@ type Query {
     StatsTotal(
         initial_timestamp: Timestamp,
         final_timestamp: Timestamp,
-    ) Stats
+    ): Stats
 
     # Return the stats aggregated according to websites
     # 
@@ -92,7 +87,7 @@ type Query {
         gender: Gender,
         users: [Email],
         websites: [Url]
-    ) [Stats]
+    ): [Stats]
 
     # Return the stats aggregated according to users
     # 
@@ -119,7 +114,7 @@ type Query {
         gender: Gender,
         users: [Email],
         websites: [Url]
-    ) [Stats]
+    ): [Stats]
 }
 
 type Mutation {

@@ -35,7 +35,7 @@ type Stats {
     users_count: Integer
     websites_count: Integer
     visits_count: Integer
-    users: [Users]
+    users: [User]
     websites: [Website]
     visits: [Visit]
 }

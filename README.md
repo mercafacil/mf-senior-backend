@@ -10,6 +10,17 @@ This project must also include a load test client configured to post mutations t
 doesn't necessarily need to be implemented in this project, since there are some other open source tools
 that can perform these queries.
 
+## Docker
+
+It is encouraged that this project, as well as any potential database that it uses, is Dockerized
+and runnable with `docker-compose`.
+
+## Tests
+
+Every query and mutation must be covered by either unit or integration tests. The tests must be
+automated and reproductible.
+
+
 ## GraphQL
 
 The [GraphQL schema](./schema.graphql) defines the types, queries and mutations that need to be 

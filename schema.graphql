@@ -1,0 +1,138 @@
+scalar Url
+scalar Date
+scalar Timestamp
+scalar Email
+scalar Topic
+
+enum Gender {
+    MALE
+    FEMALE
+    UNIDENTIFIED
+}
+
+type User {
+    id: ID!
+    email: Email!
+    name: String
+    gender: Gender!
+    date_of_birth: Date
+}
+
+type Website {
+    id: ID!
+    url: Url!
+    topic: Topic
+}
+
+type Visit {
+    id: ID!
+    website: Website!
+    user: User!
+    timestamp: Timestamp!
+}
+
+type Stats {
+    users_count: Integer
+    websites_count: Integer
+    visits_count: Integer
+    users: [Users]
+    websites: [Website]
+    visits: [Visit]
+}
+
+type Query {
+    # User queries
+    User(id: ID!): User
+    UserByEmail(email: Email!): User
+    Users(limit: Int, skip: Int, sort_field: String, sort_order: String): [User]
+
+    # Website queries
+    Website(id: ID!): Website
+    WebsiteByUrl(url: Url!): Website
+    Website(limit: Int, skip: Int, sort_field: String, sort_order: String): [Website]
+
+    # Visits queries
+    Website(id: ID!): Website
+    WebsiteByUrl(url: Url!): Website
+    Website(limit: Int, skip: Int, sort_field: String, sort_order: String): [Website]
+
+    # Return the total stats for the given
+    # timestamp range [initial_timestamp, final_timestamp].
+    #
+    # if initial_timestamp is not passed, use (0, final_timestamp]
+    # if final_timestamp is not passed, use [initial_timestamp, inf)
+    # if both initial and final timestamps are not passed, use all visits
+    StatsTotal(
+        initial_timestamp: Timestamp,
+        final_timestamp: Timestamp,
+    ) Stats
+
+    # Return the stats aggregated according to websites
+    # 
+    # The query can filter according to:
+    #   - timestamp range [initial_timestamp, final_timestamp].
+    #       if initial_timestamp is not passed, use (0, final_timestamp]
+    #       if final_timestamp is not passed, use [initial_timestamp, inf)
+    #       if both initial and final timestamps are not passed, use (0, inf)
+    #   - user's age range [min_age, max_age]
+    #       if min_age is not passed, use (0, max_age]
+    #       if max_age is not passed, use [min_age, inf)
+    #       if both min and max ages are not passed, use all user's visits
+    #   - user's gender
+    #       if no gender is passed, use all genders
+    #   - user's emails
+    #       if no emails are passed, use all user's visits
+    #   - website's urls
+    #       if no urls are passed, use all websites
+    StatsByWebsite(
+        initial_timestamp: Timestamp,
+        final_timestamp: Timestamp,
+        min_age: Integer,
+        max_age: Integer,
+        gender: Gender,
+        users: [Email],
+        websites: [Url]
+    ) [Stats]
+
+    # Return the stats aggregated according to users
+    # 
+    # The query can filter according to:
+    #   - timestamp range [initial_timestamp, final_timestamp].
+    #       if initial_timestamp is not passed, use (0, final_timestamp]
+    #       if final_timestamp is not passed, use [initial_timestamp, inf)
+    #       if both initial and final timestamps are not passed, use (0, inf)
+    #   - user's age range [min_age, max_age]
+    #       if min_age is not passed, use (0, max_age]
+    #       if max_age is not passed, use [min_age, inf)
+    #       if both min and max ages are not passed, use all user's visits
+    #   - user's gender
+    #       if no gender is passed, use all genders
+    #   - user's emails
+    #       if no emails are passed, use all user's visits
+    #   - website's urls
+    #       if no urls are passed, use all websites
+    StatsByUser(
+        initial_timestamp: Timestamp,
+        final_timestamp: Timestamp,
+        min_age: Integer,
+        max_age: Integer,
+        gender: Gender,
+        users: [Email],
+        websites: [Url]
+    ) [Stats]
+}
+
+type Mutation {
+    # Records a new visit. 
+    # If a website with the given url does not exist in the database, create it.
+    # If a user with the given email does not exist in the database, create it.
+    newVisit(website_url: Url!, user_email: Email!): Visit
+
+    # Upserts a user.
+    # If a user with the given email exists, update it. Otherwise, create it.
+    upsertUser(email: Email!, name: String, gender: Gender!, date_of_birth: Date): User
+
+    # Upserts a website.
+    # If a website with the given url exists, update it. Otherwise, create it.
+    upsertWebsite(url: Url!, topic: Topic): Website
+}
